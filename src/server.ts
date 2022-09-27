@@ -1,9 +1,11 @@
 import express, { response } from "express";
+import "reflect-metadata";
 
 const Port = 3333;
 
 const app = express();
 
+app.use(express.json());
 app.listen(Port, () => console.log(`Servidor em execução na porta: ${Port}`));
 
 const usuarios = [
@@ -30,16 +32,30 @@ const usuarios = [
   }
 ];
 
-app.get("/usuario/{id}", (request, response) => {
-  // const { id } = request.header;
+app.get("/usuario/:id", (request, response) => {
+  const usuarioFiltrado = usuarios.filter((usuario) => usuario.id == parseInt(request.params.id));
 
-  // const usuario = usuarios.find(id);
+  console.log(usuarioFiltrado);
 
-  // return response.json({
-  //   retorno: {
-  //     usuario: usuario
-  //   },
-  // });
+  return response.json({
+    retorno: {
+      usuario: usuarioFiltrado
+    }
+  });
+});
+
+app.get("/usuario/id", (request, response) => {
+  const { id } = request.query;
+
+  const usuarioFiltrado = usuarios.filter((usuario) => usuario.id === parseInt(id.toString()));
+
+  console.log(usuarioFiltrado);
+
+  return response.json({
+    retorno: {
+      usuario: usuarioFiltrado
+    }
+  });
 });
 
 app.get("/usuarios", (request, response) => {
@@ -50,7 +66,8 @@ app.get("/usuarios", (request, response) => {
   });
 });
 
-app.post("/usuario", (request, respose) => {
+
+app.post("/usuario", (request, response) => {
   const {
     id,
     nome,
@@ -59,15 +76,13 @@ app.post("/usuario", (request, respose) => {
     uf
   } = request.body;
 
-  const usuario = {
+  usuarios.push({
     id,
     nome,
     celular,
     cidade,
     uf
-  };
-
-  usuarios.push(usuario);
+  });
 
   return response.status(201).send();
 });
