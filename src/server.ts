@@ -1,12 +1,14 @@
 import express, { response } from "express";
 import "reflect-metadata";
 
-const Port = 3333;
+require('dotenv/config');
+
+const port = process.env.SERVER_PORT;
 
 const app = express();
 
 app.use(express.json());
-app.listen(Port, () => console.log(`Servidor em execução na porta: ${Port}`));
+app.listen(port, () => console.log(`Servidor em execução na porta: ${port}`));
 
 const usuarios = [
   {
